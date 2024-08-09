@@ -15,9 +15,12 @@ evaluate_vqa.py: Script to evaluate the VQA model.
 
 Dataset:
 
-The MedQA Reasoning dataset is used for training the LLM. Make sure to download it using the datasets library.
+The MedQA  dataset is used for training the LLM. Make sure to download it using the datasets library.
 
-
+Preparing environment:
+**python -m venv med_chatbot**
+Then:
+**med_chatbot\Scripts\activate**
 Prerequisites:
 
 Ensure you have the following Python packages installed:
@@ -30,3 +33,9 @@ First run this command:
 After that you clone this repo with the command:
 
 **git clone CodeSailor411/AI4U_Med_Chatbot**
+
+Then:
+**cd AI4U_Med_Chatbot/LLM**
+or:
+
+**cd AI4U_Med_Chatbot/vqa**
