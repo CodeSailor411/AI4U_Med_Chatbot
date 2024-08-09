@@ -36,6 +36,7 @@ After that you clone this repo with the command:
 
 Then:
 **cd AI4U_Med_Chatbot/LLM**
+
 or:
 
-**cd AI4U_Med_Chatbot/vqa**
+**cd AI4U_Med_Chatbot/VQA**
