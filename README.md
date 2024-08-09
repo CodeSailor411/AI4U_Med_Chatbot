@@ -12,12 +12,14 @@ evaluate_llm.py: Script to evaluate the LLM.
 train_vqa.py: Script to fine-tune the VQA model.
 evaluate_vqa.py: Script to evaluate the VQA model.
 
-Prerequisites
-Ensure you have the following Python packages installed:
-pip install transformers torch datasets
 
 Dataset
 The MedQA Reasoning dataset is used for training the LLM. Make sure to download it using the datasets library.
+
+
+Prerequisites
+Ensure you have the following Python packages installed:
+
 
 First:
 
