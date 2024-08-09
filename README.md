@@ -21,7 +21,7 @@ The MedQA Reasoning dataset is used for training the LLM. Make sure to download 
 
 First:
 
-**pip install transformers torch datasets**
+**pip install transformers torch datasets huggingface_hub**
 
 After that you clone this repo with the command:
 
