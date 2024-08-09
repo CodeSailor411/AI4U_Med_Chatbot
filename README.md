@@ -1,5 +1,6 @@
-Medical Chatbot
-This repository contains the code and instructions to set up and run a medical chatbot that uses both a Language Model (LLM) and a Visual Question Answering (VQA) model. 
+#Medical Chatbot
+##This repository contains the code and instructions to set up and run a medical chatbot that utilizes both a Language Model (LLM) and a Visual Question Answering (VQA) model. 
+
 The chatbot aims to assist users by providing formal medical responses and interpreting medical images.
 
 Project Structure
@@ -18,8 +19,9 @@ Dataset
 The MedQA Reasoning dataset is used for training the LLM. Make sure to download it using the datasets library.
 
 First:
-pip install transformers torch datasets
+
+**pip install transformers torch datasets**
 
 After that you clone this repo with the command:
 
-git clone CodeSailor411/AI4U_Med_Chatbot
+**git clone CodeSailor411/AI4U_Med_Chatbot**
