@@ -23,7 +23,7 @@ Prerequisites:
 Ensure you have the following Python packages installed:
 
 
-First:
+First run this command:
 
 **pip install transformers torch datasets huggingface_hub**
 
