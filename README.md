@@ -40,3 +40,7 @@ Then:
 or:
 
 **cd AI4U_Med_Chatbot/VQA**
+
+
+For cli_inference run :python vqa_inference_cli.py --model_path deepseek-ai/deepseek-vl-7b-chat --image_path ./brain_mri_image.png
+
