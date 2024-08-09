@@ -1,5 +1,6 @@
-#Medical Chatbot
-##This repository contains the code and instructions to set up and run a medical chatbot that utilizes both a Language Model (LLM) and a Visual Question Answering (VQA) model. 
+# Medical Chatbot
+
+## This repository contains the code and instructions to set up and run a medical chatbot that utilizes both a Language Model (LLM) and a Visual Question Answering (VQA) model. 
 
 The chatbot aims to assist users by providing formal medical responses and interpreting medical images.
 
