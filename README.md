@@ -44,5 +44,5 @@ or:
 
 For cli_inference run :
 
-**python vqa_inference.py --model_path ./fine-tuned-vqa-model --image_path ./path/to/brain_mri_image.png**
+**python vqa_inference.py --model_path ./fine-tuned-vqa-model --image_path .AI4U_Med_Chatbot/VQA/brain_mri_image.png**
 
