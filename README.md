@@ -44,5 +44,5 @@ or:
 
 For cli_inference run :
 
-**python vqa_inference_cli.py --model_path deepseek-ai/deepseek-vl-7b-chat --image_path ./brain_mri_image.png**
+**python vqa_inference.py --model_path ./fine-tuned-vqa-model --image_path ./path/to/brain_mri_image.png**
 
