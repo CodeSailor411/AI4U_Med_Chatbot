@@ -1,4 +1,4 @@
-import argparse
+dcimport argparse
 import torch
 from deepseek_vl.models import VLChatProcessor, MultiModalityCausalLM
 from deepseek_vl.utils.io import load_pil_images
@@ -24,11 +24,11 @@ def main():
     conversation = [
         {
             "role": "User",
-            "content": "<image_placeholder>Describe this MRI brain image.",
+            "content": "<image_placeholder>Describe this image.",
             "images": [args.image_path]
         },
         {
-            "role": "Assistant",
+            "role": "Medical Chatbot Assistant",
             "content": ""
         }
     ]
