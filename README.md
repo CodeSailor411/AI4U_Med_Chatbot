@@ -16,3 +16,9 @@ pip install transformers torch datasets
 
 Dataset
 The MedQA Reasoning dataset is used for training the LLM. Make sure to download it using the datasets library.
+
+First:
+pip install transformers torch datasets
+
+After that you clone this repo with the command:
+git clone CodeSailor411/AI4U_Med_Chatbot
