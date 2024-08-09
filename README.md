@@ -25,7 +25,7 @@ Ensure you have the following Python packages installed:
 
 First run this command:
 
-**pip install transformers torch datasets huggingface_hub**
+**pip install transformers torch datasets huggingface_hub deepseek-vl**
 
 After that you clone this repo with the command:
 
