@@ -13,9 +13,9 @@ tokenizer.pad_token = tokenizer.eos_token
 
 # Define a tokenization function
 def tokenize_function(examples):
-    # Combine 'input' and 'instruction' fields for LLM input
-    text = examples['input'] + ' ' + examples['instruction']
-    return tokenizer(text, padding="max_length", truncation=True, max_length=512)
+    # Concatenate 'input' and 'instruction' fields for each example in the batch
+    combined_texts = [i + ' ' + instr for i, instr in zip(examples['input'], examples['instruction'])]
+    return tokenizer(combined_texts, padding="max_length", truncation=True, max_length=512)
 
 # Apply tokenization
 tokenized_dataset = dataset.map(tokenize_function, batched=True)
