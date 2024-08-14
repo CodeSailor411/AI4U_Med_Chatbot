@@ -5,8 +5,8 @@ from datasets import load_from_disk
 
 # Load the split dataset
 dataset = load_from_disk("split_medqa_dataset")
-train_dataset = dataset['train']
-val_dataset = dataset['validation']
+train_dataset = dataset['train'].select(range(5))  # Use only 500 samples for quick experimentation
+val_dataset = dataset['validation'].select(range(5))  # Use only 100 samples for quick experimentation
 
 # Define a collate function
 def collate_fn(batch):
@@ -16,14 +16,14 @@ def collate_fn(batch):
     attention_mask = [torch.tensor(item['attention_mask']) for item in batch]
     labels = [torch.tensor(item['input_ids']) for item in batch]
 
-    input_ids = pad_sequence(input_ids, batch_first=True, padding_value=tokenizer.pad_token_id)
+    input_ids = pad_sequence(input_ids, batch_first=True, padding_value=0)  # padding_value set to 0
     attention_mask = pad_sequence(attention_mask, batch_first=True, padding_value=0)
     labels = pad_sequence(labels, batch_first=True, padding_value=-100)
 
     return {'input_ids': input_ids, 'attention_mask': attention_mask, 'labels': labels}
 
-train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, collate_fn=collate_fn)
-val_loader = DataLoader(val_dataset, batch_size=4, collate_fn=collate_fn)
+train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, collate_fn=collate_fn)  # Smaller batch size
+val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn)
 
 # Initialize the model
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
@@ -31,14 +31,14 @@ model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat1
 
 # Define optimizer and scheduler
 optimizer = AdamW(model.parameters(), lr=2e-5)
-total_steps = len(train_loader) * 3
+total_steps = len(train_loader) * 1  # Fewer epochs
 scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=0, num_training_steps=total_steps)
 
 # Training loop
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-for epoch in range(3):  # num_train_epochs
+for epoch in range(1):  # Reduce to 1 epoch
     model.train()
     total_train_loss = 0
 
@@ -74,5 +74,6 @@ for epoch in range(3):  # num_train_epochs
     avg_val_loss = total_val_loss / len(val_loader)
     print(f"Epoch {epoch + 1}, Validation Loss: {avg_val_loss}")
 
-model.save_pretrained("fine-tuned-medqa-llama")
-tokenizer.save_pretrained("fine-tuned-medqa-llama")
+# Save the fine-tuned model
+model.save_pretrained("fine-tuned-medqa-llama", state_dict=model.state_dict())
+tokenizer.save_pretrained("fine-tuned-medqa-llama") # Save the tokenizer to the same directory
