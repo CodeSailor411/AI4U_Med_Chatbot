@@ -1,68 +1,70 @@
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
 from datasets import load_dataset
+from transformers import AutoModel, AutoTokenizer, TrainingArguments, Trainer, AutoProcessor
 from PIL import Image
-from transformers import AutoFeatureExtractor
+import torch
 
-# Load the VQA dataset
+# Load VQA dataset
 dataset = load_dataset("flaviagiammarino/vqa-rad")
 
-# Initialize feature extractor and tokenizer
-feature_extractor = AutoFeatureExtractor.from_pretrained("openbmb/MiniCPM-Llama3-V-2_5")
-tokenizer = AutoTokenizer.from_pretrained("openbmb/MiniCPM-Llama3-V-2_5")
+# Initialize the processor and model
+processor = AutoProcessor.from_pretrained("openbmb/MiniCPM-V-2_6")
+model = AutoModel.from_pretrained("openbmb/MiniCPM-V-2_6", trust_remote_code=True,
+                                   attn_implementation='sdpa', torch_dtype=torch.bfloat16)
+model = model.eval().cuda()
 
-# Define a function to preprocess the data
+# Tokenizer
+tokenizer = AutoTokenizer.from_pretrained("openbmb/MiniCPM-V-2_6")
+
+# Custom preprocessing function
 def preprocess_function(examples):
-    images = [Image.open(image_path).convert("RGB") for image_path in examples['image']]
-    questions = examples['question']
-    answers = examples['answer']
-
-    # Process images
-    inputs = feature_extractor(images=images, return_tensors="pt")
-
-    # Tokenize questions
-    question_encodings = tokenizer(questions, truncation=True, padding=True)
-
-    # Tokenize answers
-    answer_encodings = tokenizer(answers, truncation=True, padding=True)
-
-    return {
-        'pixel_values': inputs['pixel_values'],
-        'input_ids': question_encodings['input_ids'],
-        'attention_mask': question_encodings['attention_mask'],
-        'labels': answer_encodings['input_ids']
-    }
+    images = [Image.open(image_path).convert('RGB') for image_path in examples['image']]  # Load images
+    inputs = processor(
+        text=examples['question'],
+        images=images,
+        return_tensors="pt",
+        padding=True,
+        truncation=True
+    )
+    
+    labels = tokenizer(
+        text=examples['answer'],
+        return_tensors="pt",
+        padding=True,
+        truncation=True
+    ).input_ids
+    
+    # Prepare inputs
+    inputs['labels'] = labels
+    for k, v in inputs.items():
+        inputs[k] = v.squeeze(0).to(model.device)
+    
+    return inputs
 
 # Preprocess the dataset
-encoded_dataset = dataset.map(preprocess_function, batched=True)
-
-# Initialize model
-model = AutoModelForCausalLM.from_pretrained("openbmb/MiniCPM-Llama3-V-2_5")
+processed_dataset = dataset.map(preprocess_function, batched=True, remove_columns=dataset.column_names)
 
 # Define training arguments
 training_args = TrainingArguments(
-    output_dir='./results',
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
+    output_dir="./results",
+    evaluation_strategy="epoch",
+    per_device_train_batch_size=1,  # Adjust based on GPU memory
+    per_device_eval_batch_size=1,
     num_train_epochs=3,
-    logging_dir='./logs',
-    logging_steps=10,
-    save_steps=500,
-    evaluation_strategy="steps",
-    save_total_limit=2
+    weight_decay=0.01,
+    save_total_limit=2,
 )
 
-# Initialize Trainer
+# Define the Trainer
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=encoded_dataset['train'],
-    eval_dataset=encoded_dataset['test'],
-    tokenizer=tokenizer
+    train_dataset=processed_dataset['train'],
+    eval_dataset=processed_dataset['test'],
 )
 
 # Fine-tune the model
 trainer.train()
 
-# Save the model
+# Save the model and processor
 model.save_pretrained("./fine-tuned-vqa-model")
+tokenizer.save_pretrained("./fine-tuned-vqa-model")
