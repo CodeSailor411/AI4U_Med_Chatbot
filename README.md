@@ -30,6 +30,8 @@ First run this command:
 
 **pip install transformers torch datasets huggingface_hub deepseek-vl**
 
+**git config --global credential.helper store**
+
 After that you clone this repo with the command:
 
 **git clone CodeSailor411/AI4U_Med_Chatbot**
